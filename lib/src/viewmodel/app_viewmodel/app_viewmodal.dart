@@ -1,138 +1,61 @@
-import 'dart:io';
-import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 class AppViewModel extends ChangeNotifier {
-  /// Variables ///
-  int pageIndex = 0;
-  String? idOfPhone = '-1';
-  Map? mobileDeviceData = {};
-  bool loaderForAddItem = false;
-  bool loaderForRecipes = false;
-  List myItems = [];
-  List myGroceryList = [];
-  List ingredients = [];
-  List categories = [];
-  List culture = [];
-  List dietitians = [];
-  Map userData = {};
-  List favorites = [];
-  int randomTimeUserEnterApp = Random().nextInt(4) + 1;
-  int userPressedYoutube = 0;
-  bool adsIsDisabled = false;
-  bool darkModeEnabled = false;
-
-  List leftSidePages = [
-    {"name": "How to use", "icon": Icons.question_mark_sharp},
-    {"name": "Subscribe", "icon": Icons.workspace_premium},
-    {"name": "Categories", "icon": Icons.category},
-    {"name": "Culture", "icon": Icons.food_bank_outlined},
-    {"name": "Profile", "icon": Icons.manage_accounts_rounded},
-    {"name": "Grocery List", "icon": Icons.local_grocery_store},
-    {"name": "Meal Plan", "icon": Icons.sports_gymnastics},
-    {"name": "About Us", "icon": Icons.info_outline_rounded},
-    {"name": "Terms & Conditions", "icon": Icons.check_box_outlined},
-    // {"name": "Cms", "icon": Icons.content_copy},
+  final List<String> _buttonTexts = [
+    '7',
+    '8',
+    '9',
+    '/',
+    '4',
+    '5',
+    '6',
+    'x',
+    '1',
+    '2',
+    '3',
+    '-',
+    '0',
+    'C',
+    '=',
+    '+',
   ];
 
-  /// Functions ///
-  setAdsDisabled({required bool val}) {
-    adsIsDisabled = val;
+  String _expression = '';
+  String _result = '';
+
+  void onButtonPressed(String buttonText) {
+    if (buttonText == 'C') {
+      _expression = '';
+      _result = '';
+    } else if (buttonText == '=') {
+      _result = _evaluateExpression();
+    } else {
+      _expression += buttonText;
+    }
     notifyListeners();
   }
 
-  setLeftSidePages({required List val}) {
-    leftSidePages = val;
-    notifyListeners();
+  String _evaluateExpression() {
+    try {
+      String modifiedExpression = _expression.replaceAll('x', '*');
+      if (modifiedExpression.isEmpty) {
+        return '';
+      }
+      Parser p = Parser();
+      Expression exp = p.parse(modifiedExpression);
+      ContextModel cm = ContextModel();
+      double eval = exp.evaluate(EvaluationType.REAL, cm);
+      notifyListeners();
+      return eval.toString();
+    } catch (e) {
+      return 'Error: Invalid Expression';
+    }
   }
 
-  setDarkModeEnabled({required bool val}) {
-    darkModeEnabled = val;
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        systemNavigationBarColor: val ? Color(0xff181818) : Colors.white,
-        systemNavigationBarIconBrightness:
-            val ? Brightness.light : Brightness.dark));
-    notifyListeners();
-  }
+  get expression => _expression;
 
-  setLoaderForAddItem({required bool value}) {
-    loaderForAddItem = value;
-    notifyListeners();
-  }
+  get buttonTexts => _buttonTexts;
 
-  setLoaderForRecipes({required bool value}) {
-    loaderForRecipes = value;
-    notifyListeners();
-  }
-
-  setMyItems({required List items}) {
-    myItems = items;
-    notifyListeners();
-  }
-
-  setMyGroceryItems({required List items}) {
-    myGroceryList = items;
-    notifyListeners();
-  }
-
-  addToMyGroceryList({required item}) {
-    myGroceryList.add(item);
-    notifyListeners();
-  }
-
-  removeFromMyGroceryList({required item}) {
-    myGroceryList.remove(item);
-    notifyListeners();
-  }
-
-  setUserData({required Map user}) {
-    userData = user;
-    notifyListeners();
-  }
-
-  setUserFavorites({required List favorites}) {
-    this.favorites = favorites;
-    notifyListeners();
-  }
-
-  addToUserFavorites({required Map favorite}) {
-    favorites.add(favorite);
-    notifyListeners();
-  }
-
-  removeFromUserFavorites({required Map favorite}) {
-    favorites.remove(favorite);
-    notifyListeners();
-  }
-
-  setIngredients({required List items}) {
-    ingredients = items;
-    notifyListeners();
-  }
-
-  setCategories({required List cat}) {
-    categories = cat;
-    notifyListeners();
-  }
-
-  setCulture({required List val}) {
-    culture = val;
-    notifyListeners();
-  }
-
-  setDietitians({required List val}) {
-    dietitians = val;
-    notifyListeners();
-  }
-
-  setPageIndex({required int index}) {
-    pageIndex = index;
-    notifyListeners();
-  }
-
-  incrementUserPressedYoutube() {
-    userPressedYoutube += 1;
-    notifyListeners();
-  }
+  get result => _result;
 }

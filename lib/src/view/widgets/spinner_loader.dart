@@ -1,10 +1,10 @@
+import 'package:calculator/src/theme/constants.dart';
 import 'package:flutter/material.dart';
 
 class SpinnerLoader extends StatefulWidget {
   const SpinnerLoader({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _SpinnerLoaderState createState() => _SpinnerLoaderState();
 }
 
@@ -29,6 +29,7 @@ class _SpinnerLoaderState extends State<SpinnerLoader>
 
   @override
   Widget build(BuildContext context) {
+    // todo: in case we have more complex equation for loaders
     return Center(
       child: Container(
         decoration: const BoxDecoration(
@@ -41,7 +42,11 @@ class _SpinnerLoaderState extends State<SpinnerLoader>
             builder: (BuildContext context, Widget? child) {
               return Transform.rotate(
                 angle: _controller.value * 2.0 * 3.141592,
-                child: Image.asset('lib/assets/logo_small.png',scale: 3,)
+                child: Text(
+                  'Calculator',
+                  textAlign: TextAlign.center,
+                  style: Constant.textStyle,
+                ),
               );
             },
           ),
