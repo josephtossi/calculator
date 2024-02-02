@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
 
 class AppViewModel extends ChangeNotifier {
+  // calculator numbers and operators
   final List<String> _buttonTexts = [
     '7',
     '8',
@@ -21,9 +22,12 @@ class AppViewModel extends ChangeNotifier {
     '+',
   ];
 
+  // string containing the total of inputs and arithmatic operators
   String _expression = '';
+  // string containing the result of the expression
   String _result = '';
 
+  // when any button in the calculator is pressed
   void onButtonPressed(String buttonText) {
     if (buttonText == 'C') {
       _expression = '';
