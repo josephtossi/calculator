@@ -3,7 +3,6 @@ import 'package:calculator/src/view/widgets/calculator_button.dart';
 import 'package:calculator/src/view/widgets/logo.dart';
 import 'package:calculator/src/viewmodel/app_viewmodel/provider/app_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class Calculator extends ConsumerStatefulWidget {
@@ -17,7 +16,11 @@ class _CalculatorState extends ConsumerState<Calculator> {
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance.addPostFrameCallback((_) {});
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
